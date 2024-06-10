@@ -11,51 +11,46 @@ string registrarJugador(int n_jug)
     return nom_jug;
 }
 
-void mostrarDado(int cara)
+string mostrarDado(int cara, int linea)
 {
+    string v[3];
     switch (cara)
         {
         case 1:
-            cout << "+-----+" << endl;
-            cout << "|     |" << endl;
-            cout << "|  x  |" << endl;
-            cout << "|     |" << endl;
-            cout << "+-----+";
+            v[0]={"     "};
+            v[1]={"  x  "};
+            v[2]={"     "};
+            return v[linea];
             break;
         case 2:
-            cout << "+-----+" << endl;
-            cout << "|  x  |" << endl;
-            cout << "|     |" << endl;
-            cout << "|  x  |" << endl;
-            cout << "+-----+";
+            v[0]={"  x  "};
+            v[1]={"     "};
+            v[2]={"  x  "};
+            return v[linea];
             break;
         case 3:
-            cout << "+-----+" << endl;
-            cout << "| x   |" << endl;
-            cout << "|  x  |" << endl;
-            cout << "|   x |" << endl;
-            cout << "+-----+";
+            v[0]={" x   "};
+            v[1]={"  x  "};
+            v[2]={"   x "};
+            return v[linea];
             break;
         case 4:
-            cout << "+-----+" << endl;
-            cout << "| x x |" << endl;
-            cout << "|     |" << endl;
-            cout << "| x x |" << endl;
-            cout << "+-----+";
+            v[0]={" x x "};
+            v[1]={"     "};
+            v[2]={" x x "};
+            return v[linea];
             break;
         case 5:
-            cout << "+-----+" << endl;
-            cout << "| x x |" << endl;
-            cout << "|  x  |" << endl;
-            cout << "| x x |" << endl;
-            cout << "+-----+";
+            v[0]={" x x "};
+            v[1]={"  x  "};
+            v[2]={" x x "};
+            return v[linea];
             break;
         case 6:
-            cout << "+-----+" << endl;
-            cout << "| x x |" << endl;
-            cout << "| x x |" << endl;
-            cout << "| x x |" << endl;
-            cout << "+-----+";
+            v[0]={" x x "};
+            v[1]={" x x "};
+            v[2]={" x x "};
+            return v[linea];
             break;
         }
 }
@@ -63,14 +58,19 @@ void mostrarDado(int cara)
 void tirarDados()
 {
     int i, j;
-    int cara[6];
+    int dado[6];
     srand(time(NULL));
     for(i=0; i<6; i++)
     {
-        cara[i]=(rand()%6)+1;
-        mostrarDado(cara[i]);
+        dado[i]=(rand()%6)+1;
+        //mostrarDado(dado[i]);
         // cout << cara[i] << endl;
     }
+    cout << "+-----+ +-----+ +-----+ +-----+ +-----+ +-----+" << endl;
+    cout << "|" << mostrarDado(dado[0], 0) << "| |" << mostrarDado(dado[1], 0) << "| |" << mostrarDado(dado[2], 0) << "| |" << mostrarDado(dado[3], 0) << "| |" << mostrarDado(dado[4], 0) << "| |" << mostrarDado(dado[5], 0) << "|" << endl;
+    cout << "|" << mostrarDado(dado[0], 1) << "| |" << mostrarDado(dado[1], 1) << "| |" << mostrarDado(dado[2], 1) << "| |" << mostrarDado(dado[3], 1) << "| |" << mostrarDado(dado[4], 1) << "| |" << mostrarDado(dado[5], 1) << "|" << endl;
+    cout << "|" << mostrarDado(dado[0], 2) << "| |" << mostrarDado(dado[1], 2) << "| |" << mostrarDado(dado[2], 2) << "| |" << mostrarDado(dado[3], 2) << "| |" << mostrarDado(dado[5], 2) << "| |" << mostrarDado(dado[5], 2) << "|" << endl;
+    cout << "+-----+ +-----+ +-----+ +-----+ +-----+ +-----+" << endl;
 }
 
 #endif // FUNCIONES_H_INCLUDED
