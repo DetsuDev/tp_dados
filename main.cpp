@@ -10,8 +10,6 @@ using namespace std;
 int main()
 {
     int opc;
-    int size = 3;
-    string nom_jug[size];
 
     while(true){
         system("cls");
@@ -33,13 +31,14 @@ int main()
             case 1:
                 // Llama a la funcion para registrar un jugador en el indice indicado,
                 // y la guarda en el vector de nombres, en la misma posicion.
-                nom_jug[1] = registrarJugador(1);
-                tirarDados();
-                system("pause");
+                cout << "+-------------------------------+" << endl;
+                cout << "| INGRESE NOMBRE DEL JUGADOR: 1 |" << endl;
+                cout << "+-------------------------------+" << endl;
+                unJugador();
                 break;
             case 2:
-                nom_jug[1] = registrarJugador(1);
-                nom_jug[2] = registrarJugador(2);
+                //nom_jug[1] = registrarJugador(1);
+                //nom_jug[2] = registrarJugador(2);
                 system("pause");
                 break;
             case 0:
