@@ -3,9 +3,22 @@
 
 string registrarJugador(int n_jug)
 {
-    string jugadores[2];
-    cin >> jugadores[n_jug];
-    return jugadores[n_jug];
+    string nombre;
+    if (n_jug == 1)
+    {
+        cout << "+-------------------------------+" << endl;
+        cout << "| INGRESE NOMBRE DEL JUGADOR  1 |" << endl;
+        cout << "+-------------------------------+" << endl;
+        cin >> nombre;
+    }
+    if (n_jug == 2)
+    {
+        cout << "+-------------------------------+" << endl;
+        cout << "| INGRESE NOMBRE DEL JUGADOR  2 |" << endl;
+        cout << "+-------------------------------+" << endl;
+        cin >> nombre;
+    }
+    return nombre;
 }
 
 string mostrarDado(int cara, int linea)
@@ -75,40 +88,113 @@ int tirarDados()
     return puntaje;
 }
 
-void unJugador()
+bool partida(int c_jug)
 {
-    string jugador = registrarJugador(0);
-    int lanz = 0;
-    int ronda = 0;
-    int max_puntaje = 0;
-    int puntaje = 0;
-    int puntuacion_total = 0;
-    system("cls");
-    while (puntuacion_total < 100)
+    bool en_partida = true;
+    bool alternar = false;
+    int lanz_totales = 3;
+    int max_puntaje[2] = {0,0};
+    string nom_jug[c_jug];
+    nom_jug[0] = registrarJugador(1);
+    if (c_jug == 2)
     {
-        ronda++;
-        for (lanz = 1; lanz <=3 ; lanz++)
+        nom_jug[1] = registrarJugador(2);
+        lanz_totales = 6;
+        alternar = true;
+    }
+
+    int ganador;
+    int perdedor;
+    int n_jug = 0;
+    int lanz = 1;
+    int lanz_jug[2] = {1,0};
+    int ronda = 0;
+    int puntaje = 0;
+    int puntuacion_total[2] = {0,0};
+    system("cls");
+    while (puntuacion_total[0] < 100 || puntuacion_total[1] < 100)
+    {
+        if (lanz%3)
         {
-            cout << "TURNO DE: " << jugador << " | RONDA N: " << ronda << " | PUNTAJE TOTAL: " << puntuacion_total << " PUNTOS" << endl;
+        ronda++;
+        }
+
+        for (lanz = 1; lanz <=lanz_totales ; lanz++)
+        {
+            cout << "PUNTAJE TOTAL: "<< puntuacion_total[n_jug] << " PUNTOS" << endl;
             cout << "-----------------------------------------------" << endl;
-            cout << "MAXIMO PUNTAJE DE LA RONDA " << max_puntaje << endl;
-            cout << "LANZAMIENTO N: " << lanz << "/3" << endl;
+            cout << "TURNO DE: " << nom_jug[n_jug] << " | RONDA N: " << ronda << endl;
+            cout << "-----------------------------------------------" << endl;
+            cout << "MAXIMO PUNTAJE DE LA RONDA " << max_puntaje[n_jug] << endl;
+            cout << "LANZAMIENTO N: " << lanz_jug[n_jug] << endl;
             cout << "-----------------------------------------------" << endl;
             puntaje = tirarDados();
+
+            puntuacion_total[n_jug] += puntaje;
+
+
+            if (puntaje > max_puntaje[n_jug])
+            {
+                max_puntaje[n_jug] = puntaje;
+            }
+
+            if (puntuacion_total[n_jug] >= 100)
+            {
+                system("cls");
+                if (n_jug == 0)
+                {
+                    ganador = 0;
+                    perdedor = 1;
+                }
+                else
+                {
+                    ganador = 1;
+                    perdedor = 0;
+                }
+
+                cout << "RONDAS TOTALES: " << ronda << endl;
+                cout << "-----------------------------------------------" << endl;
+                cout << "GANADOR: " << nom_jug[ganador] << " | PUNTUACION: " << puntuacion_total[ganador] << "/100" << endl;
+                cout << "-----------------------------------------------" << endl;
+                if (c_jug == 2)
+                {
+                    cout << "PERDEDOR: " << nom_jug[perdedor] << " | PUNTUACION: " << puntuacion_total[perdedor] << "/100" << endl;
+                    cout << "-----------------------------------------------" << endl;
+                }
+
+                system("pause");
+                en_partida = false;
+                return en_partida;
+            }
+
+            if (alternar == true)
+            {
+                if (lanz%2)
+                {
+                    lanz_jug[1]++;
+                    n_jug=1;
+                }
+                else
+                {
+                    lanz_jug[0]++;
+                    n_jug=0;
+                }
+                cout << "-----------------------------------------------" << endl;
+                cout << "SIGUIENTE TURNO: " << nom_jug[n_jug] << endl;
+                cout << "PUNTUACION TOTAL: " << puntuacion_total[n_jug] << endl;
+                cout << "-----------------------------------------------" << endl;
+            }
+            else
+            {
+                lanz_jug[0]++;
+            }
             system("pause");
             system("cls");
-            puntuacion_total += puntaje;
-            if (puntaje > max_puntaje)
-            {
-                max_puntaje = puntaje;
-            }
-            if (puntuacion_total >= 100)
-            {
-                cout << "GANASTE! " << puntuacion_total << "/100" << endl;
-                system("pause");
-            }
+
+
         }
     }
 }
+
 
 #endif // FUNCIONES_H_INCLUDED

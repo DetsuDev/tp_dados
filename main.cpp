@@ -18,7 +18,7 @@ int main()
         cout << "#########################################" << endl;
         cout << endl;
         cout << "---------------------------------------- " << endl;
-        cout << "1. UN JUGADOR (Player vs IA)" << endl;
+        cout << "1. UN JUGADOR" << endl;
         cout << "2. DOS JUGADORES" << endl;
         cout << "0. SALIR DEL JUEGO " << endl;
         cout << "---------------------------------------- " << endl << endl;
@@ -29,17 +29,10 @@ int main()
 
         switch(opc){
             case 1:
-                // Llama a la funcion para registrar un jugador en el indice indicado,
-                // y la guarda en el vector de nombres, en la misma posicion.
-                cout << "+-------------------------------+" << endl;
-                cout << "| INGRESE NOMBRE DEL JUGADOR: 1 |" << endl;
-                cout << "+-------------------------------+" << endl;
-                unJugador();
+                while (partida(1));
                 break;
             case 2:
-                //nom_jug[1] = registrarJugador(1);
-                //nom_jug[2] = registrarJugador(2);
-                system("pause");
+                while (partida(2));
                 break;
             case 0:
                 return 0;
