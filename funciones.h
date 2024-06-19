@@ -90,111 +90,155 @@ int tirarDados()
 
 bool partida(int c_jug)
 {
-    bool en_partida = true;
-    bool alternar = false;
-    int lanz_totales = 3;
-    int max_puntaje[2] = {0,0};
-    string nom_jug[c_jug];
-    nom_jug[0] = registrarJugador(1);
-    if (c_jug == 2)
+    bool modo_2jug = false; // Por defecto se activa el modo un jugador
+    string nom_jug[c_jug]; // Crea un vector del tamaño de la cantidad de jugadores
+    nom_jug[0] = registrarJugador(1); // Pide nombre del segundo jugador
+    if (c_jug == 2) // Verifica la cantidad de jugadores, si son 2, activa el modo multi
     {
-        nom_jug[1] = registrarJugador(2);
-        lanz_totales = 6;
-        alternar = true;
+        nom_jug[1] = registrarJugador(2); // Pide nombre del segundo jugador
+        modo_2jug = true;
     }
+    bool en_partida = true; // Inicia la partida
+    bool empate = false; // Verifica la situacion de empate
+    int ganador = 0; // Indice del vector de jugadores para el ganador, por defecto 0
+    int ronda = 1; // Cantidad de rondas
+    int ronda_multi = 0; // Cantidad de rondas en multijugador
+    int perdedor; // Indice del vector de jugadores para el perdedor
+    int c_rondas_totales = 0; // Cantidad de rondas totales
+    int n_jug = 0; // Indice del jugador para alternar entre rondas
+    int lanz_jug[2] = {1,0}; // Contador de lanzamientos para cada jugador (el jugador 1 empieza, por lo que comienza en 1)
+    int lanz_jug_totales[2] = {0,0}; // Contador de lanzamientos totales para cada jugador, se usa para el desempate (el jugador 1 empieza, por lo que comienza en 1)
+    int puntaje = 0; // Puntaje obtenido en el lanzamiento
+    int max_puntaje[2] = {0,0}; // Puntaje maximo del jugador 1 y 2, en case de estar en un jugador, queda la segunda posicion en 0
+    int puntuacion_total[2] = {0,0}; // Puntutacion total entre ambos jugadores
 
-    int ganador;
-    int perdedor;
-    int n_jug = 0;
-    int lanz = 1;
-    int lanz_jug[2] = {1,0};
-    int ronda = 0;
-    int puntaje = 0;
-    int puntuacion_total[2] = {0,0};
+    cout << "-----------------------------------------------" << endl;
+    cout << "INGRESE CANTIDAD DE RONDAS: " << endl;
+    cout << "-----------------------------------------------" << endl;
+    cin >> c_rondas_totales;
+
     system("cls");
-    while (puntuacion_total[0] < 100 || puntuacion_total[1] < 100)
+    while (ronda <= c_rondas_totales)
     {
-        if (lanz%3)
+        for (lanz_jug[n_jug] = 1; lanz_jug[n_jug] <=3 ; lanz_jug[n_jug]++)
         {
-        ronda++;
-        }
-
-        for (lanz = 1; lanz <=lanz_totales ; lanz++)
-        {
-            cout << "PUNTAJE TOTAL: "<< puntuacion_total[n_jug] << " PUNTOS" << endl;
-            cout << "-----------------------------------------------" << endl;
-            cout << "TURNO DE: " << nom_jug[n_jug] << " | RONDA N: " << ronda << endl;
+            system("cls");
+            cout << "TURNO DE: " << nom_jug[n_jug] << " | RONDA N: " << ronda << "/" << c_rondas_totales << endl;
             cout << "-----------------------------------------------" << endl;
             cout << "MAXIMO PUNTAJE DE LA RONDA " << max_puntaje[n_jug] << endl;
-            cout << "LANZAMIENTO N: " << lanz_jug[n_jug] << endl;
+            cout << "LANZAMIENTO N: " << lanz_jug[n_jug] << "/3" << endl;
             cout << "-----------------------------------------------" << endl;
-            puntaje = tirarDados();
 
-            puntuacion_total[n_jug] += puntaje;
+            puntaje = tirarDados(); // Llama a la funcion de tirar dados
 
+            puntuacion_total[n_jug] += puntaje; // Guarda el puntaje en el determinado jugador
 
-            if (puntaje > max_puntaje[n_jug])
+            if (puntaje > max_puntaje[n_jug]) // Verifica si el puntaje es mayor al anterior
             {
                 max_puntaje[n_jug] = puntaje;
             }
 
-            if (puntuacion_total[n_jug] >= 100)
+            // Verifica que jugador esta lanzando, y si esta por debajo de los 100 pts
+            if (n_jug == 0) // Si es el jugador 1
             {
-                system("cls");
-                if (n_jug == 0)
+                if (puntuacion_total[0] <= 100)
                 {
-                    ganador = 0;
-                    perdedor = 1;
+                    lanz_jug_totales[0]++; // Suma lanzamientos totales del jugador 1
                 }
-                else
+            }
+            else // Si es el 2
+            {
+                if (puntuacion_total[1] <= 100)
                 {
-                    ganador = 1;
-                    perdedor = 0;
+                    lanz_jug_totales[1]++; // Suma lanzamientos totales del jugador 2
                 }
-
-                cout << "RONDAS TOTALES: " << ronda << endl;
-                cout << "-----------------------------------------------" << endl;
-                cout << "GANADOR: " << nom_jug[ganador] << " | PUNTUACION: " << puntuacion_total[ganador] << "/100" << endl;
-                cout << "-----------------------------------------------" << endl;
-                if (c_jug == 2)
-                {
-                    cout << "PERDEDOR: " << nom_jug[perdedor] << " | PUNTUACION: " << puntuacion_total[perdedor] << "/100" << endl;
-                    cout << "-----------------------------------------------" << endl;
-                }
-
-                system("pause");
-                en_partida = false;
-                return en_partida;
             }
 
-            if (alternar == true)
+            cout << "-----------------------------------------------" << endl;
+            cout << "PUNTAJE TOTAL: "<< puntuacion_total[n_jug] << " PUNTOS" << endl;
+            cout << "-----------------------------------------------" << endl;
+            system("pause");
+            system("cls");
+        }
+
+        // MODO MULTI
+        if (modo_2jug == true)
+        {
+
+            if (lanz_jug[0] == lanz_jug[1] && (lanz_jug[0]%3 && lanz_jug[1]%3)) // Verifica que ambos jugadores hayan hecho sus 3 lanzamientos y tengan la misma cantidad
             {
-                if (lanz%2)
+                ronda_multi++; // Suma una ronda al multijugador
+                if (ronda_multi%2) // Verifica si es par para mostrar la mitad en pantalla
                 {
-                    lanz_jug[1]++;
-                    n_jug=1;
+                    ronda++;
                 }
-                else
-                {
-                    lanz_jug[0]++;
-                    n_jug=0;
-                }
+
+
+            }
+            if (n_jug==0) // Verifica que jugador esta jugando para alternar
+            {
+                n_jug=1; // Establece el indice de jugador en 1 (jugador 2)
+            }
+            else
+            {
+                n_jug=0; // Establece el indice de jugador en 0 (jugador 1)
+            }
+
+            if (ronda <= c_rondas_totales) // Verifica la cantidad de rondas, por que a veces se muestra al terminar todas ellas
+            {
+                system("cls");
                 cout << "-----------------------------------------------" << endl;
                 cout << "SIGUIENTE TURNO: " << nom_jug[n_jug] << endl;
                 cout << "PUNTUACION TOTAL: " << puntuacion_total[n_jug] << endl;
                 cout << "-----------------------------------------------" << endl;
-            }
-            else
-            {
-                lanz_jug[0]++;
-            }
-            system("pause");
-            system("cls");
+                system("pause");
 
+            }
 
         }
-    }
-}
+        // FIN MODO MULTI
+        else
+        {
+            ronda++;
+        }
 
+    }
+
+
+    if (puntuacion_total[0] >= 100 && puntuacion_total[1] >= 100)
+    {
+        empate = true; // Ambos jugadores superaron los 100 pts, asi que hay que desempatar
+        if (lanz_jug_totales[0] < lanz_jug_totales[1]) // Si el jugador 1 llego a 100 pts antes, pasa a ser el ganador
+        {
+            ganador = 0;
+            perdedor = 1;
+        }
+        else // Si no, es el ganador el jugador 2
+        {
+            ganador = 1;
+            perdedor = 0;
+        }
+    }
+
+    system("cls");
+    cout << "RONDAS TOTALES: " << ronda-1 << endl;
+    cout << "-----------------------------------------------" << endl;
+    if (puntuacion_total[0] >= 100 || puntuacion_total[1] >= 100)
+    {
+        cout << "GANADOR: " << nom_jug[ganador] << " | PUNTUACION: " << puntuacion_total[ganador] << "/100" << endl;
+        cout << "LANZAMIENTOS: " << lanz_jug_totales[ganador] << endl;
+        cout << "-----------------------------------------------" << endl;
+
+    }
+    else
+    {
+        cout << "PERDEDOR: " << nom_jug[0] << " | PUNTUACION: " << puntuacion_total[0] << "/100" << endl;
+        cout << "LANZAMIENTOS: " << lanz_jug_totales[0] << endl;
+        cout << "-----------------------------------------------" << endl;
+    }
+    system("pause");
+    en_partida = false;
+    return en_partida;
+}
 
 #endif // FUNCIONES_H_INCLUDED
