@@ -1,24 +1,78 @@
 #ifndef FUNCIONES_H_INCLUDED
 #define FUNCIONES_H_INCLUDED
 
-string registrarJugador(int n_jug)
+int condiciones(int vec[])
+{
+    bool vec_escalera[6] = {false}; // crearemos un vector booleano con todas las variables en falso
+    bool escalera = true; // asumiremos que el caso de la escalera es true hasta que se diga lo contrario
+
+    int primer_valor; // variable para almacenar el primer valor del vector de los dados
+    bool iguales = true; // asumimos tambien que todos los numeros son iguales hasta que se diga lo contrario
+
+    for(int i = 0; i < 6; i++)
+    {
+        vec_escalera[vec[i] - 1] = true; // el contenido del vector de los dados se utilizara como indice para poner en true los elementos del vector de la escalera
+
+        if(i == 0)
+        {
+            primer_valor = vec[i]; // se almacena el primer valor cuando el indice es 0
+        }
+        else if(vec[i] != primer_valor)  // si cualquiera de los numeros es distinto al primero, significa que los numeros no son iguales
+        {
+            iguales = false;
+        }
+    }
+
+    for(int x = 0; x < 6; x++)  // si todas las variables del vector booleano estan en true, significa que efectivamente hay una escalera
+    {
+        if (vec_escalera[x] != true)
+        {
+            escalera = false;
+        }
+    }
+    // luego devolveremos un numero que representa un caso especial para cada uno, 1 para escalera, 2 para iguales, 0 para sexteo, y 3 para simplmemente sumar puntaje
+    if(escalera == true)
+    {
+        return 1;
+    }
+    else if(iguales == true)
+    {
+        if(primer_valor != 0)
+        {
+            return 2;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return 3;
+    }
+}
+
+string registrarJugador(int pos_vec, int n_jug)
 {
     string nombre;
-    if (n_jug == 1)
+    string apellido;
+    if (pos_vec == 0)
     {
-        cout << "+-------------------------------+" << endl;
-        cout << "| INGRESE NOMBRE DEL JUGADOR  1 |" << endl;
-        cout << "+-------------------------------+" << endl;
+        cout << "+------------------------------+" << endl;
+        cout << "| INGRESE NOMBRE DEL JUGADOR " << n_jug << " |" << endl;
+        cout << "+------------------------------+" << endl;
         cin >> nombre;
+        return nombre;
     }
-    if (n_jug == 2)
+    else
     {
-        cout << "+-------------------------------+" << endl;
-        cout << "| INGRESE NOMBRE DEL JUGADOR  2 |" << endl;
-        cout << "+-------------------------------+" << endl;
-        cin >> nombre;
+        cout << "+--------------------------------+" << endl;
+        cout << "| INGRESE APELLIDO DEL JUGADOR "  << n_jug << " |" << endl;
+        cout << "+--------------------------------+" << endl;
+        cin >> apellido;
+        system("cls");
+        return apellido;
     }
-    return nombre;
 }
 
 string mostrarDado(int cara, int linea)
@@ -67,6 +121,7 @@ string mostrarDado(int cara, int linea)
 
 int tirarDados()
 {
+    int caso;
     int puntaje = 0;
     int i;
     int dado[6];
@@ -74,9 +129,25 @@ int tirarDados()
     for(i=0; i<6; i++)
     {
         dado[i]=(rand()%6)+1;
-        puntaje += dado[i];
-        //mostrarDado(dado[i]);
-        // cout << cara[i] << endl;
+        //puntaje += dado[i];
+
+    }
+
+    caso = condiciones(dado[]);
+    switch (caso)
+    {
+    case 0:
+        cout << "Sexteto" << endl; // 0 para sexteo
+        puntaje += dado[i]*10;
+    case 1:
+        cout << "Escalera" << endl; // 1 para escalera
+        puntaje += 9999;
+    case 2:
+        cout << "Sexteto 6" << endl; // 2 para iguales
+        puntaje -= 9999;
+    case 3:
+        puntaje += dado[i]; // 3 para simplmemente sumar puntaje
+
     }
 
     cout << "+-----+ +-----+ +-----+ +-----+ +-----+ +-----+" << endl;
@@ -85,30 +156,36 @@ int tirarDados()
     cout << "|" << mostrarDado(dado[0], 2) << "| |" << mostrarDado(dado[1], 2) << "| |" << mostrarDado(dado[2], 2) << "| |" << mostrarDado(dado[3], 2) << "| |" << mostrarDado(dado[4], 2) << "| |" << mostrarDado(dado[5], 2) << "|" << endl;
     cout << "+-----+ +-----+ +-----+ +-----+ +-----+ +-----+" << endl;
     cout << "(" << puntaje << ")"<< endl;
+
     return puntaje;
 }
 
 bool partida(int c_jug)
 {
     bool modo_2jug = false; // Por defecto se activa el modo un jugador
-    string nom_jug[c_jug]; // Crea un vector del tamaño de la cantidad de jugadores
-    nom_jug[0] = registrarJugador(1); // Pide nombre del segundo jugador
+    string nom_jug[4]; // Crea un vector del doble de la cantidad de jugadores
+
+    //Las variables de los nombres estan alternadas: (nombre1, nombre2, apellido1, apellido2), ya que se usa un mismo indice para todo el juego
+    nom_jug[0] = registrarJugador(0, 1); // Pide el nombre del primer jugador
+    nom_jug[2] = registrarJugador(1, 1); // Pide el apellido del primer jugador
     if (c_jug == 2) // Verifica la cantidad de jugadores, si son 2, activa el modo multi
     {
-        nom_jug[1] = registrarJugador(2); // Pide nombre del segundo jugador
+        nom_jug[1] = registrarJugador(0, 2); // Pide nombre del segundo jugador
+        nom_jug[3] = registrarJugador(1, 2); // Pide nombre del segundo jugador
         modo_2jug = true;
     }
+
     bool en_partida = true; // Inicia la partida
     bool empate = false; // Verifica la situacion de empate
-    int ganador = 0; // Indice del vector de jugadores para el ganador, por defecto 0
+    int n_jug = 0; // Indice del jugador para alternar entre rondas
     int ronda = 1; // Cantidad de rondas
     int ronda_multi = 0; // Cantidad de rondas en multijugador
-    int perdedor; // Indice del vector de jugadores para el perdedor
     int c_rondas_totales = 0; // Cantidad de rondas totales
-    int n_jug = 0; // Indice del jugador para alternar entre rondas
-    int lanz_jug[2] = {1,0}; // Contador de lanzamientos para cada jugador (el jugador 1 empieza, por lo que comienza en 1)
-    int lanz_jug_totales[2] = {0,0}; // Contador de lanzamientos totales para cada jugador, se usa para el desempate (el jugador 1 empieza, por lo que comienza en 1)
+    int ganador = 0; // Indice del vector de jugadores para el ganador, por defecto 0
+    int perdedor; // Indice del vector de jugadores para el perdedor
     int puntaje = 0; // Puntaje obtenido en el lanzamiento
+    int lanz_jug[2] = {1,0}; // Contador de lanzamientos para cada jugador (el jugador 1 empieza, por lo que comienza en 1)
+    int lanz_jug_totales[2] = {1,0}; // Contador de lanzamientos totales para cada jugador, se usa para el desempate (el jugador 1 empieza, por lo que comienza en 1)
     int max_puntaje[2] = {0,0}; // Puntaje maximo del jugador 1 y 2, en case de estar en un jugador, queda la segunda posicion en 0
     int puntuacion_total[2] = {0,0}; // Puntutacion total entre ambos jugadores
 
@@ -130,6 +207,8 @@ bool partida(int c_jug)
             cout << "-----------------------------------------------" << endl;
 
             puntaje = tirarDados(); // Llama a la funcion de tirar dados
+
+
 
             puntuacion_total[n_jug] += puntaje; // Guarda el puntaje en el determinado jugador
 
@@ -225,14 +304,14 @@ bool partida(int c_jug)
     cout << "-----------------------------------------------" << endl;
     if (puntuacion_total[0] >= 100 || puntuacion_total[1] >= 100)
     {
-        cout << "GANADOR: " << nom_jug[ganador] << " | PUNTUACION: " << puntuacion_total[ganador] << "/100" << endl;
+        cout << "GANADOR: " << nom_jug[ganador] << " " << nom_jug[ganador+2] << " | PUNTUACION: " << puntuacion_total[ganador] << "/100" << endl;
         cout << "LANZAMIENTOS: " << lanz_jug_totales[ganador] << endl;
         cout << "-----------------------------------------------" << endl;
 
     }
     else
     {
-        cout << "PERDEDOR: " << nom_jug[0] << " | PUNTUACION: " << puntuacion_total[0] << "/100" << endl;
+        cout << "PERDEDOR: " << nom_jug[0] << " " << nom_jug[2] << " | PUNTUACION: " << puntuacion_total[0] << "/100" << endl;
         cout << "LANZAMIENTOS: " << lanz_jug_totales[0] << endl;
         cout << "-----------------------------------------------" << endl;
     }
