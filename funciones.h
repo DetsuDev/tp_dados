@@ -37,7 +37,7 @@ int condiciones(int vec[])
     }
     else if(iguales == true)
     {
-        if(primer_valor != 0)
+        if(primer_valor != 6)
         {
             return 2;
         }
@@ -119,44 +119,71 @@ string mostrarDado(int cara, int linea)
     }
 }
 
-int tirarDados()
+int tirarDados(bool prueba)
 {
     int caso;
     int puntaje = 0;
     int i;
     int dado[6];
-    srand(time(NULL));
-    for(i=0; i<6; i++)
+    if (prueba == true)
     {
-        dado[i]=(rand()%6)+1;
-        //puntaje += dado[i];
+        for(i=0; i<6; i++)
+        {
+            cout << "Ingrese un numero: ";
+            cin >> dado[i];
+        }
+    }
+    else
+    {
+
+        srand(time(NULL));
+        for(i=0; i<6; i++)
+        {
+            dado[i]=(rand()%6)+1;
+            //puntaje += dado[i];
+
+        }
 
     }
-
-    caso = condiciones(dado[]);
-    switch (caso)
-    {
-    case 0:
-        cout << "Sexteto" << endl; // 0 para sexteo
-        puntaje += dado[i]*10;
-    case 1:
-        cout << "Escalera" << endl; // 1 para escalera
-        puntaje += 9999;
-    case 2:
-        cout << "Sexteto 6" << endl; // 2 para iguales
-        puntaje -= 9999;
-    case 3:
-        puntaje += dado[i]; // 3 para simplmemente sumar puntaje
-
-    }
-
     cout << "+-----+ +-----+ +-----+ +-----+ +-----+ +-----+" << endl;
     cout << "|" << mostrarDado(dado[0], 0) << "| |" << mostrarDado(dado[1], 0) << "| |" << mostrarDado(dado[2], 0) << "| |" << mostrarDado(dado[3], 0) << "| |" << mostrarDado(dado[4], 0) << "| |" << mostrarDado(dado[5], 0) << "|" << endl;
     cout << "|" << mostrarDado(dado[0], 1) << "| |" << mostrarDado(dado[1], 1) << "| |" << mostrarDado(dado[2], 1) << "| |" << mostrarDado(dado[3], 1) << "| |" << mostrarDado(dado[4], 1) << "| |" << mostrarDado(dado[5], 1) << "|" << endl;
     cout << "|" << mostrarDado(dado[0], 2) << "| |" << mostrarDado(dado[1], 2) << "| |" << mostrarDado(dado[2], 2) << "| |" << mostrarDado(dado[3], 2) << "| |" << mostrarDado(dado[4], 2) << "| |" << mostrarDado(dado[5], 2) << "|" << endl;
     cout << "+-----+ +-----+ +-----+ +-----+ +-----+ +-----+" << endl;
-    cout << "(" << puntaje << ")"<< endl;
 
+
+    caso = condiciones(dado);
+    switch (caso)
+    {
+    case 1:
+        puntaje = 100;
+        cout << "Escalera" << endl; // 1 para escalera
+        cout << "(" << puntaje << ")"<< endl;
+        break;
+    case 2:
+        puntaje = dado[0]*10;
+        cout << "Sexteto" << endl; // 2 para iguales
+        cout << "(" << puntaje << ")"<< endl;
+        break;
+    case 3:
+        for(i=0; i<6; i++) // 3 para simplmemente sumar puntaje
+        {
+            puntaje += dado[i];
+
+        }
+        cout << "(" << puntaje << ")"<< endl;
+        break;
+    case 0:
+        puntaje = 0;
+        cout << "Sexteto 6" << endl; // 0 para sexteo
+        cout << "(" << puntaje << ")"<< endl;
+        break;
+    }
+
+    if (prueba == true)
+    {
+        system("pause");
+    }
     return puntaje;
 }
 
@@ -164,6 +191,7 @@ bool partida(int c_jug)
 {
     bool modo_2jug = false; // Por defecto se activa el modo un jugador
     string nom_jug[4]; // Crea un vector del doble de la cantidad de jugadores
+    int min_rondas = 1; // Minimo de rondas
 
     //Las variables de los nombres estan alternadas: (nombre1, nombre2, apellido1, apellido2), ya que se usa un mismo indice para todo el juego
     nom_jug[0] = registrarJugador(0, 1); // Pide el nombre del primer jugador
@@ -172,6 +200,7 @@ bool partida(int c_jug)
     {
         nom_jug[1] = registrarJugador(0, 2); // Pide nombre del segundo jugador
         nom_jug[3] = registrarJugador(1, 2); // Pide nombre del segundo jugador
+        min_rondas = 2;
         modo_2jug = true;
     }
 
@@ -184,15 +213,20 @@ bool partida(int c_jug)
     int ganador = 0; // Indice del vector de jugadores para el ganador, por defecto 0
     int perdedor; // Indice del vector de jugadores para el perdedor
     int puntaje = 0; // Puntaje obtenido en el lanzamiento
-    int lanz_jug[2] = {1,0}; // Contador de lanzamientos para cada jugador (el jugador 1 empieza, por lo que comienza en 1)
+    int lanz_jug[2] = {1,1}; // Contador de lanzamientos para cada jugador (el jugador 1 empieza, por lo que comienza en 1)
     int lanz_jug_totales[2] = {1,0}; // Contador de lanzamientos totales para cada jugador, se usa para el desempate (el jugador 1 empieza, por lo que comienza en 1)
     int max_puntaje[2] = {0,0}; // Puntaje maximo del jugador 1 y 2, en case de estar en un jugador, queda la segunda posicion en 0
     int puntuacion_total[2] = {0,0}; // Puntutacion total entre ambos jugadores
 
     cout << "-----------------------------------------------" << endl;
-    cout << "INGRESE CANTIDAD DE RONDAS: " << endl;
+    cout << "INGRESE CANTIDAD DE RONDAS (min " << min_rondas << "): " << endl;
     cout << "-----------------------------------------------" << endl;
     cin >> c_rondas_totales;
+    if (c_rondas_totales < min_rondas)
+    {
+        cout << "Vuelva a ingresar." << endl;
+        cin >> c_rondas_totales;
+    }
 
     system("cls");
     while (ronda <= c_rondas_totales)
@@ -206,11 +240,18 @@ bool partida(int c_jug)
             cout << "LANZAMIENTO N: " << lanz_jug[n_jug] << "/3" << endl;
             cout << "-----------------------------------------------" << endl;
 
-            puntaje = tirarDados(); // Llama a la funcion de tirar dados
+            puntaje = tirarDados(false); // Llama a la funcion de tirar dados
+
+            if (puntaje == 0)
+            {
+                puntuacion_total[n_jug] = 0; // Reseta el puntaje a 0 sin es un sexteto de 6
+            }
+            else
+            {
+                puntuacion_total[n_jug] += puntaje; // Guarda el puntaje en el determinado jugador
+            }
 
 
-
-            puntuacion_total[n_jug] += puntaje; // Guarda el puntaje en el determinado jugador
 
             if (puntaje > max_puntaje[n_jug]) // Verifica si el puntaje es mayor al anterior
             {

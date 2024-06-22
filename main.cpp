@@ -34,6 +34,9 @@ int main()
             case 2:
                 while (partida(2));
                 break;
+            case 3:
+                tirarDados(true);
+                break;
             case 0:
                 return 0;
                 break;
